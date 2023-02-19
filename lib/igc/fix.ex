@@ -1,5 +1,19 @@
 defmodule IGC.Fix do
-  defstruct [:time, :position, :valid?, :pressure_altitude, :gnss_altitude, :extensions]
+  defstruct [
+    :time,
+    :position,
+    :valid?,
+    :pressure_altitude,
+    :gnss_altitude,
+    :extensions,
+    :magnetic_heading,
+    :true_heading,
+    :air_speed,
+    :satellite_in_use,
+    :true_air_speed,
+    :wind_direction,
+    :wind_speed
+  ]
 
   @type t :: %__MODULE__{
           time: Time.t(),
@@ -7,7 +21,14 @@ defmodule IGC.Fix do
           valid?: boolean,
           pressure_altitude: integer,
           gnss_altitude: integer,
-          extensions: IGC.Extensions.values()
+          extensions: IGC.Extensions.values(),
+          magnetic_heading: integer | nil,
+          true_heading: integer | nil,
+          air_speed: integer | nil,
+          satellite_in_use: integer | nil,
+          true_air_speed: integer | nil,
+          wind_direction: integer | nil,
+          wind_speed: integer | nil
         }
 
   @type extensions :: %{String.t() => String.t()}
@@ -23,17 +44,39 @@ defmodule IGC.Fix do
          {:ok, gnss_altitude, _rest} <- IGC.Parser.take(rest, 5, :int),
          {:ok, time} <- Time.new(hours, minutes, seconds),
          {:ok, extensions} <-
-           IGC.Extensions.parse_values(rest, headers.fix_extensions.extensions) do
+           IGC.Extensions.parse_values(rest, headers.fix_extensions.extensions),
+         fix <- set_well_known_data(extensions) do
       {:ok,
-       %__MODULE__{
-         time: time,
-         position: position,
-         valid?: valid? == "A",
-         gnss_altitude: gnss_altitude,
-         pressure_altitude: pressure_altitude,
-         extensions: extensions
-         ## TODO: Parse well-known data
+       %{
+         fix
+         | time: time,
+           position: position,
+           valid?: valid? == "A",
+           gnss_altitude: gnss_altitude,
+           pressure_altitude: pressure_altitude,
+           extensions: extensions
        }}
+    end
+  end
+
+  @spec set_well_known_data(extensions :: IGC.Extensions.values(), fix :: t()) :: t()
+  defp set_well_known_data(extensions, fix \\ %__MODULE__{}) do
+    case extensions do
+      %{"HDM" => value} -> set_i(fix, :magnetic_heading, value)
+      %{"HDT" => value} -> set_i(fix, :true_heading, value)
+      %{"IAS" => value} -> set_i(fix, :air_speed, value)
+      %{"SIU" => value} -> set_i(fix, :satellite_in_use, value)
+      %{"WDI" => value} -> set_i(fix, :wind_direction, value)
+      %{"WSP" => value} -> set_i(fix, :wind_speed, value)
+      _ -> fix
+    end
+  end
+
+  @spec set_i(fix :: t(), key :: atom(), value :: String.t()) :: t()
+  defp set_i(fix, key, value) do
+    case Integer.parse(value) do
+      {int, ""} -> Map.put(fix, key, int)
+      _ -> fix
     end
   end
 end

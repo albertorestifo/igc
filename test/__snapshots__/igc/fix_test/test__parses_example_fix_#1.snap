@@ -1,10 +1,13 @@
 {:ok,
  %{
    __struct__: IGC.Fix,
-   extensions: nil,
+   air_speed: nil,
+   extensions: %{},
    gnss_altitude: 1224,
+   magnetic_heading: nil,
    position: %{__struct__: IGC.Position, lat: 40.253517, lng: -4.906267},
    pressure_altitude: 1255,
+   satellite_in_use: nil,
    time: %{
      __struct__: Time,
      calendar: Calendar.ISO,
@@ -13,5 +16,9 @@
      minute: 34,
      second: 49
    },
-   valid?: true
+   true_air_speed: nil,
+   true_heading: nil,
+   valid?: true,
+   wind_direction: nil,
+   wind_speed: nil
  }}
