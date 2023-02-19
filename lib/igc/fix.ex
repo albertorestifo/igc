@@ -1,4 +1,14 @@
 defmodule IGC.Fix do
+  @moduledoc """
+  Represents a single fix record in the IGC file.
+
+  All the extensions defined in the B record of the IGC file are stored in the
+  `extensions` field.
+
+  The "well known" extensions are also stored in their own fields, if provided
+  by the dataset.
+  """
+
   defstruct [
     :time,
     :position,
