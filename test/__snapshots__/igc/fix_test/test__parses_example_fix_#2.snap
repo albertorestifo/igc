@@ -1,7 +1,7 @@
 {:ok,
  %{
    __struct__: IGC.Fix,
-   extensions: nil,
+   extensions: %{},
    gnss_altitude: 1347,
    position: %{__struct__: IGC.Position, lat: 40.447217, lng: -4.509817},
    pressure_altitude: 1206,
