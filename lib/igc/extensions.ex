@@ -10,7 +10,7 @@ defmodule IGC.Extensions do
   def parse_line(line) do
     with {:ok, nr_extensions, rest} <- IGC.Parser.take(line, 2, :int),
          {:ok, extensions} <- read_all_extensions(rest, nr_extensions) do
-      {:ok, %__MODULE__{extensions: extensions}}
+      {:ok, %__MODULE__{extensions: Enum.sort_by(extensions, &elem(&1, 1))}}
     end
   end
 
