@@ -41,7 +41,7 @@ defmodule IGC.Position do
   @spec read_degrees(String.t(), non_neg_integer()) :: {:ok, float, String.t()} | {:error, atom}
   defp read_degrees(line, size) do
     with {:ok, deg, rest} <- IGC.Parser.take(line, size, :int),
-         {:ok, min, rest} <- IGC.Parser.take(rest, 2, :int),
+         {:ok, min, rest} <- IGC.Parser.take(rest, 5, :int),
          minutes <- min / 1000 / 60 do
       {:ok, Float.round(deg + minutes, 6), rest}
     end

@@ -1,0 +1,17 @@
+{:ok,
+ %{
+   __struct__: IGC.Fix,
+   extensions: nil,
+   gnss_altitude: 1224,
+   position: %{__struct__: IGC.Position, lat: 40.253517, lng: -4.906267},
+   pressure_altitude: 1255,
+   time: %{
+     __struct__: Time,
+     calendar: Calendar.ISO,
+     hour: 12,
+     microsecond: {0, 0},
+     minute: 34,
+     second: 49
+   },
+   valid?: true
+ }}
