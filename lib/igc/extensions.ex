@@ -1,9 +1,9 @@
 defmodule IGC.Extensions do
-  defstruct [:extensions]
+  defstruct extensions: []
 
-  @type extension_map :: %{String.t() => {integer(), integer()}}
+  @type extensions_list :: [{String.t(), integer(), integer()}]
   @type t :: %__MODULE__{
-          extensions: extension_map()
+          extensions: extensions_list()
         }
 
   @spec parse_line(String.t()) :: {:ok, t()} | {:error, atom}
@@ -14,9 +14,9 @@ defmodule IGC.Extensions do
     end
   end
 
-  @spec read_all_extensions(String.t(), integer(), extension_map()) ::
-          {:ok, extension_map()} | {:error, atom}
-  defp read_all_extensions(line, left, extensions \\ %{})
+  @spec read_all_extensions(String.t(), integer(), extensions_list()) ::
+          {:ok, extensions_list()} | {:error, atom}
+  defp read_all_extensions(line, left, extensions \\ [])
   defp read_all_extensions(_line, left, extensions) when left == 0, do: {:ok, extensions}
 
   defp read_all_extensions(line, left, _extensions) when line == "" and left > 0,
@@ -28,13 +28,13 @@ defmodule IGC.Extensions do
     end
   end
 
-  @spec read_extension(String.t(), extension_map()) ::
-          {:ok, extension_map(), String.t()} | {:error, atom}
+  @spec read_extension(String.t(), extensions_list()) ::
+          {:ok, extensions_list(), String.t()} | {:error, atom}
   defp read_extension(line, extensions) do
     with {:ok, start_byte, rest} <- IGC.Parser.take(line, 2, :int),
          {:ok, end_byte, rest} <- IGC.Parser.take(rest, 2, :int),
          {:ok, short_code, rest} <- IGC.Parser.take(rest, 3) do
-      {:ok, Map.put(extensions, short_code, {start_byte, end_byte}), rest}
+      {:ok, extensions ++ [{short_code, start_byte, end_byte}], rest}
     end
   end
 end

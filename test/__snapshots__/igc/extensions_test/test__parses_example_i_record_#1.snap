@@ -1,11 +1,11 @@
 {:ok,
  %{
    __struct__: IGC.Extensions,
-   extensions: %{
-     "ACZ" => {45, 47},
-     "FXA" => {36, 38},
-     "SIU" => {39, 40},
-     "VAT" => {41, 44},
-     "VXA" => {48, 50}
-   }
+   extensions: [
+     {"FXA", 36, 38},
+     {"SIU", 39, 40},
+     {"VAT", 41, 44},
+     {"ACZ", 45, 47},
+     {"VXA", 48, 50}
+   ]
  }}
