@@ -1,0 +1,40 @@
+%{
+  __struct__: IGC.Headers,
+  competition_class: :unknown,
+  competition_id: :unknown,
+  date: %{
+    __struct__: Date,
+    calendar: Calendar.ISO,
+    day: 3,
+    month: 12,
+    year: 2022
+  },
+  firmware_version: "1.0",
+  flight_number: 0,
+  flight_recorder_id: nil,
+  flight_recorder_type: "Syride,SYS'Nav XL",
+  glider_id: :unknown,
+  glider_type: "BGD Epic",
+  gnss_altitude: "GEO",
+  hardware_version: nil,
+  pilot: "Alberto Restifo",
+  pressure_altitude: "ISA",
+  pressure_sensor: "TE,MS5607,30480",
+  raw_headers: %{
+    "ALG" => {"ALTGPS", "GEO"},
+    "ALP" => {"ALTPRESSURE", "ISA"},
+    "CCL" => {"COMPETITIONCLASS", "NKN"},
+    "CID" => {"COMPETITIONID", "NKN"},
+    "CM2" => {"CREW2", "NIL"},
+    "DTE" => {"DATE", "031222,00"},
+    "DTM" => {"GPSDATUM", "WGS84"},
+    "FTY" => {"FRTYPE", "Syride,SYS'Nav XL"},
+    "GID" => {"GLIDERID", "NKN"},
+    "GPS" => {"RECEIVER", "UBlox,MAX-M8Q,72ch,10000m"},
+    "GTY" => {"GLIDERTYPE", "BGD Epic"},
+    "PLT" => {"PILOTINCHARGE", "Alberto Restifo"},
+    "PRS" => {"PRESSALTSENSOR", "TE,MS5607,30480"},
+    "RFW" => {"HARDWAREVERSION", "1.0"}
+  },
+  timezone: nil
+}

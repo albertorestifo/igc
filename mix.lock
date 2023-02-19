@@ -1,0 +1,3 @@
+%{
+  "snapshy": {:hex, :snapshy, "0.3.0", "70941652b24a1742e7a8ea4b6a62922a1bd34518c8c6e15bd732bbae9441f1bb", [:mix], [], "hexpm", "4dc6f988dd9c62169f42de690a3a68b88d963a398220a87a9362ae6659eca22d"},
+}

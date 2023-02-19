@@ -1,0 +1,41 @@
+%{
+  __struct__: IGC.Headers,
+  competition_class: nil,
+  competition_id: :unknown,
+  date: %{
+    __struct__: Date,
+    calendar: Calendar.ISO,
+    day: 16,
+    month: 2,
+    year: 2023
+  },
+  firmware_version: "2022-12-22:a2e86365",
+  flight_number: nil,
+  flight_recorder_id: nil,
+  flight_recorder_type: "STODEUS,ULTRABIP",
+  glider_id: :unknown,
+  glider_type: "BGD Base 2",
+  gnss_altitude: "GEO",
+  hardware_version: "ULTRABIP 1.0",
+  pilot: "Alberto Restifo",
+  pressure_altitude: "ISA",
+  pressure_sensor: "INFINEON,DPS310,7000",
+  raw_headers: %{
+    "ALG" => {"ALTGPS", "GEO"},
+    "ALP" => {"ALTPRESSURE", "ISA"},
+    "CID" => {"COMPETITIONID", "NKN"},
+    "CM2" => {"CREW2", "NIL"},
+    "DTE" => {nil, "160223"},
+    "DTM" => {"GPSDATUM", "WGS84"},
+    "FTY" => {"FRTYPE", "STODEUS,ULTRABIP"},
+    "GID" => {"GLIDERID", "NKN"},
+    "GPS" => {"RECEIVER", "GOTOP,GT1110SN,22,18000"},
+    "GTY" => {"GLIDERTYPE", "BGD Base 2"},
+    "PLT" => {"PILOTINCHARGE", "Alberto Restifo"},
+    "PRS" => {"PRESSALTSENSOR", "INFINEON,DPS310,7000"},
+    "RFW" => {"FIRMWAREVERSION", "2022-12-22:a2e86365"},
+    "RHW" => {"HARDWAREVERSION", "ULTRABIP 1.0"},
+    "TZN" => {"TIMEZONE", "1"}
+  },
+  timezone: "1"
+}
