@@ -60,6 +60,16 @@ defmodule IGC.Parser do
       {"B", fix_def} ->
         with {:ok, fix} <- IGC.Fix.parse_line(fix_def, headers), do: {:ok, :fix, fix}
 
+      {"I", fix_extensions} ->
+        with {:ok, extensions} <- IGC.Extensions.parse_line(fix_extensions) do
+          {:ok, %{headers | fix_extensions: extensions}}
+        end
+
+      {"J", data_extensions} ->
+        with {:ok, extensions} <- IGC.Extensions.parse_line(data_extensions) do
+          {:ok, %{headers | data_extensions: extensions}}
+        end
+
       _ ->
         nil
     end

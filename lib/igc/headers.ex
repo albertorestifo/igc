@@ -41,7 +41,13 @@ defmodule IGC.Headers do
     :hardware_version,
 
     # All the raw headers as they were parsed
-    raw_headers: %{}
+    raw_headers: %{},
+
+    # All the fix record extensions
+    fix_extensions: %IGC.Extensions{},
+
+    # All the data record extensions
+    data_extensions: %IGC.Extensions{}
   ]
 
   @type t :: %__MODULE__{
@@ -60,7 +66,9 @@ defmodule IGC.Headers do
           pilot: maybe_value(),
           pressure_sensor: maybe_value(),
           firmware_version: maybe_value(),
-          hardware_version: maybe_value()
+          hardware_version: maybe_value(),
+          fix_extensions: IGC.Extensions.t(),
+          data_extensions: IGC.Extensions.t()
         }
 
   @type raw_headers :: %{String.t() => {String.t() | nil, String.t()}}
