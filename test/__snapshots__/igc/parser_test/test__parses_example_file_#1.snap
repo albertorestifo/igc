@@ -1,0 +1,33 @@
+%{
+  __struct__: IGC.Fix,
+  air_speed: nil,
+  compensated_variometer: 1.8,
+  extensions: %{
+    "ACZ" => "4-0",
+    "FXA" => "012",
+    "SIU" => "31",
+    "VAT" => "0180",
+    "VXA" => "140"
+  },
+  gnss_altitude: 1231,
+  horizontal_accuracy: 12,
+  magnetic_heading: nil,
+  position: %{__struct__: IGC.Position, lat: 40.254933, lng: -4.906333},
+  pressure_altitude: 1267,
+  satellite_in_use: 31,
+  time: %{
+    __struct__: Time,
+    calendar: Calendar.ISO,
+    hour: 12,
+    microsecond: {0, 0},
+    minute: 34,
+    second: 32
+  },
+  true_air_speed: nil,
+  true_heading: nil,
+  uncompensated_variometer: nil,
+  valid?: true,
+  vertical_accuracy: 140,
+  wind_direction: nil,
+  wind_speed: nil
+}

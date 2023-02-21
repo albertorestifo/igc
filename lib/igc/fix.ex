@@ -20,10 +20,13 @@ defmodule IGC.Fix do
     :true_heading,
     :air_speed,
     :satellite_in_use,
-    :accuracy,
+    :horizontal_accuracy,
+    :vertical_accuracy,
     :true_air_speed,
     :wind_direction,
-    :wind_speed
+    :wind_speed,
+    :compensated_variometer,
+    :uncompensated_variometer
   ]
 
   @type t :: %__MODULE__{
@@ -37,10 +40,13 @@ defmodule IGC.Fix do
           true_heading: integer | nil,
           air_speed: integer | nil,
           satellite_in_use: integer | nil,
-          accuracy: integer | nil,
+          horizontal_accuracy: integer | nil,
+          vertical_accuracy: integer | nil,
           true_air_speed: integer | nil,
           wind_direction: integer | nil,
-          wind_speed: integer | nil
+          wind_speed: integer | nil,
+          compensated_variometer: integer | nil,
+          uncompensated_variometer: integer | nil
         }
 
   @type extensions :: %{String.t() => String.t()}
@@ -72,31 +78,50 @@ defmodule IGC.Fix do
   end
 
   @well_known_extensions [
-    {"HDM", :magnetic_heading},
-    {"HDT", :true_heading},
-    {"IAS", :air_speed},
-    {"SIU", :satellite_in_use},
-    {"WDI", :wind_direction},
-    {"WSP", :wind_speed},
-    {"FXA", :accuracy}
+    {"HDM", :magnetic_heading, :int},
+    {"HDT", :true_heading, :int},
+    {"IAS", :air_speed, :int},
+    {"SIU", :satellite_in_use, :int},
+    {"WDI", :wind_direction, :int},
+    {"WSP", :wind_speed, :int},
+    {"FXA", :horizontal_accuracy, :int},
+    {"VXA", :vertical_accuracy, :int},
+    {"VAT", :compensated_variometer, :vario},
+    {"VAR", :uncompensated_variometer, :vario}
   ]
 
   @spec set_well_known_data(extensions :: IGC.Extensions.values(), fix :: t()) :: t()
   defp set_well_known_data(extensions, fix \\ %__MODULE__{}) do
-    Enum.reduce(@well_known_extensions, fix, fn {extension_key, fix_key}, fix ->
+    Enum.reduce(@well_known_extensions, fix, fn {extension_key, fix_key, type}, fix ->
       if Map.has_key?(extensions, extension_key) do
-        set_i(fix, fix_key, Map.get(extensions, extension_key))
+        value = Map.get(extensions, extension_key)
+
+        value =
+          case type do
+            :int -> parse_int(value)
+            :vario -> parse_variometer(value)
+          end
+
+        Map.put(fix, fix_key, value)
       else
         fix
       end
     end)
   end
 
-  @spec set_i(fix :: t(), key :: atom(), value :: String.t()) :: t()
-  defp set_i(fix, key, value) do
+  @spec parse_int(String.t()) :: integer | nil
+  defp parse_int(value) do
     case Integer.parse(value) do
-      {int, ""} -> Map.put(fix, key, int)
-      _ -> fix
+      {int, ""} -> int
+      _ -> nil
+    end
+  end
+
+  @spec parse_variometer(String.t()) :: integer | nil
+  defp parse_variometer(value) do
+    case Integer.parse(value) do
+      {int, ""} -> int / 100
+      _ -> nil
     end
   end
 end
