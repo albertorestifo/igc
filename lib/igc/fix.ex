@@ -20,6 +20,7 @@ defmodule IGC.Fix do
     :true_heading,
     :air_speed,
     :satellite_in_use,
+    :accuracy,
     :true_air_speed,
     :wind_direction,
     :wind_speed
@@ -36,6 +37,7 @@ defmodule IGC.Fix do
           true_heading: integer | nil,
           air_speed: integer | nil,
           satellite_in_use: integer | nil,
+          accuracy: integer | nil,
           true_air_speed: integer | nil,
           wind_direction: integer | nil,
           wind_speed: integer | nil
@@ -69,17 +71,25 @@ defmodule IGC.Fix do
     end
   end
 
+  @well_known_extensions [
+    {"HDM", :magnetic_heading},
+    {"HDT", :true_heading},
+    {"IAS", :air_speed},
+    {"SIU", :satellite_in_use},
+    {"WDI", :wind_direction},
+    {"WSP", :wind_speed},
+    {"FXA", :accuracy}
+  ]
+
   @spec set_well_known_data(extensions :: IGC.Extensions.values(), fix :: t()) :: t()
   defp set_well_known_data(extensions, fix \\ %__MODULE__{}) do
-    case extensions do
-      %{"HDM" => value} -> set_i(fix, :magnetic_heading, value)
-      %{"HDT" => value} -> set_i(fix, :true_heading, value)
-      %{"IAS" => value} -> set_i(fix, :air_speed, value)
-      %{"SIU" => value} -> set_i(fix, :satellite_in_use, value)
-      %{"WDI" => value} -> set_i(fix, :wind_direction, value)
-      %{"WSP" => value} -> set_i(fix, :wind_speed, value)
-      _ -> fix
-    end
+    Enum.reduce(@well_known_extensions, fix, fn {extension_key, fix_key}, fix ->
+      if Map.has_key?(extensions, extension_key) do
+        set_i(fix, fix_key, Map.get(extensions, extension_key))
+      else
+        fix
+      end
+    end)
   end
 
   @spec set_i(fix :: t(), key :: atom(), value :: String.t()) :: t()

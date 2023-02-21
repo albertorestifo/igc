@@ -37,7 +37,7 @@ defmodule IGC.Parser do
   defp chunk_line(line, headers) do
     case parse_line(line, headers) do
       # Emit a value
-      {:ok, type, value} -> {:cont, [{type, value, headers}], headers}
+      {:ok, type, value} -> {:cont, {type, value, headers}, headers}
       # Update the headers and emit nothing
       {:ok, headers} -> {:cont, headers}
       # Stop for errors
