@@ -1,6 +1,7 @@
 {:ok,
  %{
    __struct__: IGC.Fix,
+   accuracy: nil,
    air_speed: nil,
    extensions: %{},
    gnss_altitude: 1224,
