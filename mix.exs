@@ -7,8 +7,9 @@ defmodule IGC.MixProject do
       version: "1.0.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps(),
-      description: "IGC file parser"
+      description: "IGC file parser",
+      package: package(),
+      deps: deps()
     ]
   end
 
