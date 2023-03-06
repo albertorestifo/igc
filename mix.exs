@@ -4,10 +4,11 @@ defmodule IGC.MixProject do
   def project do
     [
       app: :igc,
-      version: "0.1.0",
+      version: "1.0.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      description: "IGC file parser"
     ]
   end
 
@@ -22,6 +23,13 @@ defmodule IGC.MixProject do
   defp deps do
     [
       {:snapshy, "~> 0.2"}
+    ]
+  end
+
+  def package do
+    [
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/albertorestifo/igc"}
     ]
   end
 end
