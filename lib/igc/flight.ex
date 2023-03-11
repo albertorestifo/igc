@@ -5,7 +5,7 @@ defmodule IGC.Flight do
 
   alias IGC.{Fix, Headers}
 
-  defstruct [:headers, :entries]
+  defstruct headers: %Headers{}, entries: []
 
   @type t :: %__MODULE__{
           headers: Headers.t(),
