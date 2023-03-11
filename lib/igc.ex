@@ -18,6 +18,10 @@ defmodule IGC do
     IGC.Parser.parse(stream)
   end
 
+  def parse_all(content) do
+    IGC.Parser.parse_all(content)
+  end
+
   @doc """
   Like `parse/1`, but filters the stream to only the specified types.
   For example, to only get the positional updates:

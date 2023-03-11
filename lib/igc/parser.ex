@@ -1,8 +1,10 @@
 defmodule IGC.Parser do
+  alias IGC.{Fix, Headers, Flight, Extensions}
+
   @typedoc """
   The record emitted by the stream
   """
-  @type record :: {:fix, IGC.Fix.t(), IGC.Headers.t()}
+  @type record :: {:fix, Fix.t(), Headers.t()}
 
   @doc """
   Parses an IGC file and creates a stream of the following IGC record types:
@@ -18,7 +20,14 @@ defmodule IGC.Parser do
   def parse(stream) do
     stream
     |> Stream.map(&String.trim/1)
-    |> Stream.chunk_while(%IGC.Headers{}, &chunk_line/2, fn headers -> {:cont, headers} end)
+    |> Stream.chunk_while(%Headers{}, &chunk_line/2, fn headers -> {:cont, headers} end)
+  end
+
+  @spec parse_all(String.t()) :: Flight.t()
+  def parse_all(content) do
+    content
+    |> String.split("\n", trim: true)
+    |> Enum.reduce(%Flight{}, &parse_reduce/2)
   end
 
   @doc """
@@ -32,14 +41,14 @@ defmodule IGC.Parser do
     |> Stream.filter(fn {type, _, _} -> type in filter end)
   end
 
-  @spec chunk_line(String.t(), IGC.Headers.t()) ::
-          {:cont, [record], IGC.Headers.t()} | {:halt, {:error, atom}} | {:cont, IGC.Headers.t()}
+  @spec chunk_line(String.t(), Headers.t()) ::
+          {:cont, [record], Headers.t()} | {:halt, {:error, atom}} | {:cont, Headers.t()}
   defp chunk_line(line, headers) do
     case parse_line(line, headers) do
       # Emit a value
-      {:ok, type, value} -> {:cont, {type, value, headers}, headers}
+      {:ok, %Fix{} = fix} -> {:cont, {:fix, fix, headers}, headers}
       # Update the headers and emit nothing
-      {:ok, headers} -> {:cont, headers}
+      {:ok, %Headers{} = headers} -> {:cont, headers}
       # Stop for errors
       {:error, error} -> {:halt, {:error, error}}
       # Ignore lines we're not processing
@@ -47,26 +56,40 @@ defmodule IGC.Parser do
     end
   end
 
-  @spec parse_line(String.t(), IGC.Headers.t()) ::
-          {:ok, :fix, IGC.Fix.t()} | {:ok, IGC.Headers.t()} | {:error, atom} | nil
+  @spec parse_reduce(String.t(), Flight.t()) :: Flight.t()
+  defp parse_reduce(row, flight) do
+    case parse_line(row, flight.headers) do
+      {:ok, %Fix{} = fix} ->
+        %{flight | entries: [fix | flight.entries]}
+
+      {:ok, %Headers{} = headers} ->
+        %{flight | headers: headers}
+
+      _ ->
+        flight
+    end
+  end
+
+  @spec parse_line(String.t(), Headers.t()) ::
+          {:ok, Fix.t() | Headers.t()} | {:error, atom} | nil
   defp parse_line(line, headers) do
     case String.next_codepoint(line) do
       {"A", flight_recorder_id} ->
         {:ok, %{headers | flight_recorder_id: flight_recorder_id}}
 
       {"H", header_def} ->
-        IGC.Headers.parse_line(header_def, headers)
+        Headers.parse_line(header_def, headers)
 
       {"B", fix_def} ->
-        with {:ok, fix} <- IGC.Fix.parse_line(fix_def, headers), do: {:ok, :fix, fix}
+        Fix.parse_line(fix_def, headers)
 
       {"I", fix_extensions} ->
-        with {:ok, extensions} <- IGC.Extensions.parse_line(fix_extensions) do
+        with {:ok, extensions} <- Extensions.parse_line(fix_extensions) do
           {:ok, %{headers | fix_extensions: extensions}}
         end
 
       {"J", data_extensions} ->
-        with {:ok, extensions} <- IGC.Extensions.parse_line(data_extensions) do
+        with {:ok, extensions} <- Extensions.parse_line(data_extensions) do
           {:ok, %{headers | data_extensions: extensions}}
         end
 

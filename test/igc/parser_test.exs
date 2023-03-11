@@ -47,4 +47,9 @@ defmodule IGCParserTest do
     # Snapshot the fix
     fix
   end
+
+  test_snapshot "Parsers the entire file without streaming" do
+    File.read!("test/fixtures/sample_1.igc")
+    |> IGC.Parser.parse_all()
+  end
 end
