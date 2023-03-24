@@ -27,6 +27,7 @@ defmodule IGC.Parser do
   def parse_all(content) do
     content
     |> String.split("\n", trim: true)
+    |> Enum.map(&String.trim/1)
     |> Enum.reduce(%Flight{}, &parse_reduce/2)
   end
 
