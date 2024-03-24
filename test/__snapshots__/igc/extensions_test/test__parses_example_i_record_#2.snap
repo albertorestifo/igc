@@ -1,2 +1,0 @@
-{:ok,
- %{__struct__: IGC.Extensions, extensions: [{"FXA", 36, 38}, {"SIU", 39, 40}]}}

@@ -1,10 +1,10 @@
 defmodule IGCHeadersTest do
-  use Snapshy
   use ExUnit.Case
+  use Mneme
 
   doctest IGC.Headers
 
-  test_snapshot "Parses example headers #1" do
+  test "Parses example headers #1" do
     example_headers = [
       "FDTE160223",
       "FPLTPILOTINCHARGE:Alberto Restifo",
@@ -23,13 +23,16 @@ defmodule IGCHeadersTest do
       "FALPALTPRESSURE:ISA"
     ]
 
-    Enum.reduce(example_headers, %IGC.Headers{}, fn line, headers ->
-      assert {:ok, headers} = IGC.Headers.parse_line(line, headers)
-      headers
-    end)
+    headers =
+      Enum.reduce(example_headers, %IGC.Headers{}, fn line, headers ->
+        assert {:ok, headers} = IGC.Headers.parse_line(line, headers)
+        headers
+      end)
+
+    auto_assert headers
   end
 
-  test_snapshot "Parses example headers #2" do
+  test "Parses example headers #2" do
     example_headers = [
       "FDTEDATE:031222,00",
       "FPLTPILOTINCHARGE:Alberto Restifo",
@@ -48,9 +51,12 @@ defmodule IGCHeadersTest do
       "FCCLCOMPETITIONCLASS:NKN"
     ]
 
-    Enum.reduce(example_headers, %IGC.Headers{}, fn line, headers ->
-      assert {:ok, headers} = IGC.Headers.parse_line(line, headers)
-      headers
-    end)
+    headers =
+      Enum.reduce(example_headers, %IGC.Headers{}, fn line, headers ->
+        assert {:ok, headers} = IGC.Headers.parse_line(line, headers)
+        headers
+      end)
+
+    auto_assert headers
   end
 end
