@@ -1,5 +1,5 @@
 defmodule IGCExtensionsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   use Mneme
 
   doctest IGC.Extensions
